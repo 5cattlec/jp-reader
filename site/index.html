@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>日本語ニュース リーダー</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="show-furigana nav-open">
+  <header class="topbar">
+    <button id="hamburger" class="icon-btn" aria-label="메뉴 열기/닫기">☰</button>
+    <h1>日本語ニュース<span class="sub">リーダー</span></h1>
+    <div class="controls">
+      <button id="toggleFuri" class="btn" aria-pressed="true">ふりがな</button>
+      <button id="toggleKo" class="btn" aria-pressed="false">한국어</button>
+      <div class="seg" id="voiceSeg" aria-label="音声"></div>
+      <label class="size">文字<input id="fontRange" type="range" min="16" max="30" value="20" /></label>
+    </div>
+  </header>
+
+  <main>
+    <div id="scrim" class="scrim"></div>
+    <aside class="side">
+      <div class="listhead">
+        <input id="search" class="search" type="search" placeholder="검색…" />
+        <button id="favFilter" class="btn small" aria-pressed="false">★</button>
+      </div>
+      <div id="list" class="list" aria-label="記事一覧"></div>
+    </aside>
+    <section id="reader" class="reader">
+      <div class="empty">← メニュー(☰)から記事を選んでください</div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <span id="updated"></span>
+    <span class="hint">個人学習用 · 単語クリックで意味 · 한국어 버튼으로 해석</span>
+  </footer>
+
+  <div id="popup" class="popup" hidden>
+    <div class="pop-word"></div>
+    <div class="pop-read"></div>
+    <div class="pop-links">
+      <a class="pop-naver" target="_blank" rel="noopener">네이버 사전</a>
+      <a class="pop-weblio" target="_blank" rel="noopener">Weblio</a>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

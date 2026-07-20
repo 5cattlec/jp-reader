@@ -1,0 +1,49 @@
+name: build-and-deploy
+
+on:
+  schedule:
+    - cron: "0 */6 * * *"     # 6시간마다(UTC) 자동 실행
+  workflow_dispatch: {}         # 수동 실행 버튼
+  push:
+    branches: [main]            # main에 push할 때도 실행
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r tools/requirements.txt
+
+      - name: Generate site (RSS → 후리가나 → 한국어 → 음성)
+        run: python tools/update.py
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload site artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+      - name: Deploy to GitHub Pages
+        id: deploy
+        uses: actions/deploy-pages@v4

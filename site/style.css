@@ -1,0 +1,117 @@
+:root{
+  --bg:#f6f3ec; --panel:#fffdf8; --ink:#2b2622; --muted:#8b8378;
+  --line:#e6e0d4; --accent:#c0492f; --accent-soft:#f4e3dd; --gold:#e0a52e;
+  --ko:#2f6fb0; --ko-soft:#eef3fa;
+  --reader-size:20px; --side-w:320px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{
+  font-family:"Hiragino Kaku Gothic ProN","Yu Gothic","Meiryo","Malgun Gothic",system-ui,sans-serif;
+  background:var(--bg); color:var(--ink);
+  display:flex; flex-direction:column; min-height:100%;
+}
+
+/* ---- top bar ---- */
+.topbar{
+  display:flex; align-items:center; gap:14px;
+  padding:10px 16px; background:var(--panel); border-bottom:1px solid var(--line);
+  position:sticky; top:0; z-index:30; flex-wrap:wrap;
+}
+.icon-btn{
+  border:1px solid var(--line); background:#fff; border-radius:9px; width:38px; height:38px;
+  font-size:18px; cursor:pointer; line-height:1; flex:0 0 auto;
+}
+.icon-btn:hover{border-color:var(--accent); color:var(--accent)}
+.topbar h1{font-size:19px; margin:0; margin-right:auto}
+.topbar h1 .sub{color:var(--accent); margin-left:.4em; font-weight:600; font-size:.8em}
+.controls{display:flex; align-items:center; gap:10px; flex-wrap:wrap}
+.btn{border:1px solid var(--line); background:#fff; color:var(--ink);
+  padding:7px 13px; border-radius:999px; cursor:pointer; font-size:13px; transition:.15s}
+.btn.small{padding:5px 10px; font-size:12px}
+.btn:hover{border-color:var(--accent); color:var(--accent)}
+#toggleFuri[aria-pressed="true"],#favFilter[aria-pressed="true"]{background:var(--accent-soft); border-color:var(--accent); color:var(--accent)}
+#toggleKo[aria-pressed="true"]{background:var(--ko-soft); border-color:var(--ko); color:var(--ko)}
+.size{font-size:12px; color:var(--muted); display:flex; align-items:center; gap:6px}
+.size input{accent-color:var(--accent); width:80px}
+.seg{display:inline-flex; border:1px solid var(--line); border-radius:999px; overflow:hidden}
+.seg button{border:0; background:#fff; padding:6px 12px; font-size:13px; cursor:pointer; color:var(--muted)}
+.seg button.on{background:var(--accent); color:#fff}
+
+/* ---- layout / drawer ---- */
+main{flex:1; display:flex; min-height:0; position:relative}
+.side{
+  width:var(--side-w); flex:0 0 var(--side-w); background:var(--panel);
+  border-right:1px solid var(--line); display:flex; flex-direction:column; min-height:0;
+  transition:margin-left .22s ease; z-index:20;
+}
+body:not(.nav-open) .side{margin-left:calc(-1 * var(--side-w) - 2px)}
+.scrim{display:none}
+.listhead{display:flex; gap:8px; padding:10px 12px; border-bottom:1px solid var(--line)}
+.search{flex:1; min-width:0; border:1px solid var(--line); border-radius:8px; padding:7px 10px; font-size:13px}
+.list{overflow-y:auto}
+.reader{flex:1; overflow-y:auto; padding:30px 42px; min-width:0}
+
+/* ---- list: 제목만 ---- */
+.card{padding:12px 16px; border-bottom:1px solid var(--line); cursor:pointer; transition:.12s;
+  font-size:14px; line-height:1.5; color:var(--ink)}
+.card:hover{background:var(--accent-soft)}
+.card.active{background:var(--accent-soft); box-shadow:inset 3px 0 0 var(--accent); font-weight:600}
+.card.fav::after{content:"★"; color:var(--gold); margin-left:6px; font-size:12px}
+
+/* ---- reader ---- */
+.reader .empty{color:var(--muted); margin-top:60px; text-align:center}
+.reader .src{font-size:12px; color:var(--accent); font-weight:700; letter-spacing:.05em}
+.rhead{display:flex; align-items:flex-start; gap:12px}
+.reader h2{font-size:calc(var(--reader-size) + 8px); line-height:1.7; margin:6px 0; flex:1}
+.title-ko{font-size:calc(var(--reader-size) - 3px); color:var(--ko); margin:0 0 6px; font-weight:600}
+.reader .bigstar{font-size:24px; color:#d8d0c2; cursor:pointer; margin-top:8px}
+.reader .bigstar.on{color:var(--gold)}
+.reader .meta{font-size:12px; color:var(--muted); margin-bottom:18px}
+.reader .meta a{color:var(--muted)}
+.player{display:flex; align-items:center; gap:12px; margin:0 0 22px; padding:12px 16px;
+  background:var(--panel); border:1px solid var(--line); border-radius:12px; flex-wrap:wrap}
+.player audio{flex:1; min-width:220px; height:36px}
+.player .rate{font-size:12px; color:var(--muted)}
+.player select{border:1px solid var(--line); border-radius:6px; padding:2px 4px}
+.body{font-size:var(--reader-size); line-height:2.15}
+.body p{margin:0 0 1.5em}
+/* 문장 단위 줄 + 재생 버튼 + 재생중 하이라이트 */
+.s{display:block; border-radius:5px; padding:1px 4px; transition:background .12s}
+.s .sp{border:0; background:none; color:#cdc4b3; cursor:pointer; font-size:.6em;
+  padding:0 8px 0 0; vertical-align:middle; line-height:1}
+.s:hover{background:#faf5ea}
+.s:hover .sp{color:var(--accent)}
+.s.playing{background:#fff4d2}
+.s.playing .sp{color:var(--accent)}
+.body p.ko{color:var(--ko); font-size:calc(var(--reader-size) - 3px); line-height:1.9;
+  margin:-.7em 0 1.6em; padding-left:12px; border-left:3px solid var(--ko-soft)}
+body:not(.show-ko) .ko{display:none}
+
+/* ---- word / furigana ---- */
+.w{cursor:pointer; border-radius:3px; transition:background .1s}
+.w:hover{background:var(--accent-soft)}
+.w.sel{background:#ffe9a8}
+ruby rt{font-size:.5em; color:var(--accent); font-weight:400; user-select:none; transition:opacity .12s}
+body:not(.show-furigana) ruby rt{opacity:0}
+
+/* ---- popup ---- */
+.popup{position:absolute; z-index:50; background:#fff; border:1px solid var(--line);
+  border-radius:12px; box-shadow:0 8px 24px rgba(0,0,0,.14); padding:12px 14px; min-width:180px; max-width:260px}
+.popup .pop-word{font-size:20px; font-weight:700}
+.popup .pop-read{font-size:13px; color:var(--accent); margin-top:2px; min-height:1em}
+.popup .pop-links{display:flex; gap:8px; margin-top:10px}
+.popup .pop-links a{flex:1; text-align:center; font-size:12px; text-decoration:none;
+  border:1px solid var(--line); border-radius:8px; padding:6px 4px; color:var(--ink)}
+.popup .pop-links a:hover{border-color:var(--accent); color:var(--accent)}
+
+/* ---- footer ---- */
+.foot{display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap;
+  padding:8px 20px; font-size:11px; color:var(--muted); border-top:1px solid var(--line); background:var(--panel)}
+
+/* ---- mobile: drawer overlays ---- */
+@media (max-width:760px){
+  .side{position:absolute; top:0; bottom:0; left:0; box-shadow:2px 0 16px rgba(0,0,0,.12)}
+  body.nav-open .scrim{display:block; position:absolute; inset:0; background:rgba(0,0,0,.28); z-index:15}
+  .reader{padding:22px 18px}
+}

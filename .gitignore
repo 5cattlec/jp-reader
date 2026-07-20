@@ -1,0 +1,11 @@
+# 생성물 — 클라우드(GitHub Actions)에서 매번 새로 생성하므로 저장소엔 안 올림
+site/audio/*.mp3
+site/data/articles.json
+
+# 파이썬
+__pycache__/
+*.pyc
+
+# 로컬 산출/로그
+tools/update.log
+jp-reader-site.zip
