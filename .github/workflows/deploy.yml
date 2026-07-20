@@ -1,11 +1,11 @@
-name: build-and-deploy
+name: Deploy jp-reader to Pages
 
 on:
-  schedule:
-    - cron: "0 */6 * * *"     # 6시간마다(UTC) 자동 실행
-  workflow_dispatch: {}         # 수동 실행 버튼
   push:
-    branches: [main]            # main에 push할 때도 실행
+    branches: [main]
+  schedule:
+    - cron: "0 */6 * * *"
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -13,37 +13,42 @@ permissions:
   id-token: write
 
 concurrency:
-  group: pages
-  cancel-in-progress: true
+  group: "pages"
+  cancel-in-progress: false
 
 jobs:
-  build-deploy:
+  build:
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deploy.outputs.page_url }}
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v5
+      - name: Setup Python
+        uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-          cache: pip
 
       - name: Install dependencies
         run: pip install -r tools/requirements.txt
 
-      - name: Generate site (RSS → 후리가나 → 한국어 → 음성)
+      - name: Generate site (RSS, furigana, Korean, TTS)
         run: python tools/update.py
 
-      - name: Configure Pages
+      - name: Setup Pages
         uses: actions/configure-pages@v5
 
-      - name: Upload site artifact
+      - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: site
 
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
       - name: Deploy to GitHub Pages
-        id: deploy
+        id: deployment
         uses: actions/deploy-pages@v4
