@@ -6,10 +6,10 @@
   <title>日本語ニュース リーダー</title>
   <link rel="stylesheet" href="style.css" />
 </head>
-<body class="show-furigana nav-open">
+<body class="show-furigana">
   <header class="topbar">
-    <button id="hamburger" class="icon-btn" aria-label="메뉴 열기/닫기">☰</button>
-    <h1>日本語ニュース<span class="sub">リーダー</span></h1>
+    <button id="navToggle" class="icon-btn" aria-label="메뉴">☰</button>
+    <a href="#" class="brand" id="brand">日本語ニュース<span class="sub">リーダー</span></a>
     <div class="controls">
       <button id="toggleFuri" class="btn" aria-pressed="true">ふりがな</button>
       <button id="toggleKo" class="btn" aria-pressed="false">한국어</button>
@@ -18,23 +18,46 @@
     </div>
   </header>
 
-  <main>
-    <div id="scrim" class="scrim"></div>
-    <aside class="side">
-      <div class="listhead">
-        <input id="search" class="search" type="search" placeholder="검색…" />
-        <button id="favFilter" class="btn small" aria-pressed="false">★</button>
-      </div>
-      <div id="list" class="list" aria-label="記事一覧"></div>
-    </aside>
-    <section id="reader" class="reader">
-      <div class="empty">← メニュー(☰)から記事を選んでください</div>
-    </section>
-  </main>
+  <div class="layout">
+    <nav class="sidebar" id="sidebar">
+      <a class="navitem" data-view="articles" href="#">📰 기사</a>
+      <a class="navitem" data-view="feedback" href="#feedback">💬 피드백</a>
+      <a class="navitem" href="admin.html">🔒 관리자</a>
+    </nav>
+    <div class="scrim" id="scrim"></div>
+
+    <main>
+      <!-- 기사(게시판) -->
+      <section id="home" class="home view">
+        <div class="homebar">
+          <input id="search" class="search" type="search" placeholder="검색…" />
+          <button id="favFilter" class="btn small" aria-pressed="false">★ 즐겨찾기</button>
+          <span id="sitecount" class="sitecount"></span>
+        </div>
+        <div id="cards" class="cards"></div>
+        <div id="pager" class="pager"></div>
+      </section>
+
+      <!-- 읽기 -->
+      <section id="reader" class="reader view" hidden></section>
+
+      <!-- 피드백 -->
+      <section id="feedback" class="feedback view" hidden>
+        <h2 class="fb-title">💬 피드백</h2>
+        <p class="fb-desc">사이트에 바라는 점·오류·의견을 남겨주세요.</p>
+        <div class="fb-form">
+          <input id="fbNick" class="fb-nick" maxlength="40" placeholder="닉네임 (선택)" />
+          <textarea id="fbMsg" class="fb-msg" maxlength="2000" rows="3" placeholder="내용을 입력하세요…"></textarea>
+          <div class="fb-actions"><span id="fbNote" class="fb-note"></span><button id="fbSend" class="btn primary">남기기</button></div>
+        </div>
+        <div id="fbList" class="fb-list"></div>
+      </section>
+    </main>
+  </div>
 
   <footer class="foot">
     <span id="updated"></span>
-    <span class="hint">個人学習用 · 単語クリックで意味 · 한국어 버튼으로 해석</span>
+    <span class="hint">個人学習用 · 単語クリックで意味 · ▶로 문장별 재생</span>
   </footer>
 
   <div id="popup" class="popup" hidden>
@@ -46,6 +69,8 @@
     </div>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

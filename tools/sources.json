@@ -7,6 +7,8 @@
   "rate": "-6%",
   "pitch": "+0Hz",
   "max_per_feed": 4,
+  "keep_days": 30,
+  "max_articles": 500,
   "translate": true,
   "_note_nhk": "NHK(news.web.nhk / www3.nhk.or.jp)는 NHK ONE 로그인 게이트로 전문 추출 불가(요약만). 그래서 기본 제외.",
   "feeds": [

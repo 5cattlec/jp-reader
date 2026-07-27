@@ -6,8 +6,8 @@
 
 실행:  python tools/update.py
 """
-import os, sys, re, json, html, hashlib, asyncio
-from datetime import datetime, timezone
+import os, sys, re, json, html, hashlib, asyncio, time
+from datetime import datetime, timezone, timedelta
 
 import feedparser
 import requests
@@ -368,6 +368,16 @@ def make_id(source, url):
 def clean(s):
     return re.sub(r"[ \t　]+", " ", (s or "")).strip()
 
+def entry_date(entry):
+    """기사 날짜 YYYY-MM-DD (RSS published 우선, 없으면 오늘)."""
+    pp = entry.get("published_parsed") or entry.get("updated_parsed")
+    if pp:
+        try:
+            return time.strftime("%Y-%m-%d", pp)
+        except Exception:
+            pass
+    return datetime.now(timezone.utc).strftime("%Y-%m-%d")
+
 def main():
     with open(SOURCES_JSON, encoding="utf-8") as f:
         cfg = json.load(f)
@@ -426,6 +436,7 @@ def main():
                 "url": url,
                 "published": published,
                 "title": title,
+                "date": entry_date(entry),
                 "title_html": line_to_html(title),
                 "title_ko": title_ko,
                 "summary": summary,
@@ -437,9 +448,20 @@ def main():
             })
             added += 1
 
-    # 오래된 기사 정리(자동 실행 시 무한 증가 방지) + 고아 오디오 삭제
-    max_articles = int(cfg.get("max_articles", 60))
-    store["articles"] = store["articles"][:max_articles]
+    # 보관 정책: 최근 keep_days일 유지(지난 기사도 날짜별 보관), max_articles 안전상한
+    # 날짜 없는 기존 기사엔 published 파싱 백필
+    for a in store["articles"]:
+        if not a.get("date"):
+            m = re.search(r"\d{1,2} \w{3} \d{4}", a.get("published", ""))
+            try:
+                a["date"] = datetime.strptime(m.group(0), "%d %b %Y").strftime("%Y-%m-%d") if m else "0000-00-00"
+            except Exception:
+                a["date"] = "0000-00-00"
+    keep_days = int(cfg.get("keep_days", 30))
+    max_articles = int(cfg.get("max_articles", 500))
+    cutoff = (datetime.now(timezone.utc) - timedelta(days=keep_days)).strftime("%Y-%m-%d")
+    store["articles"].sort(key=lambda a: (a.get("date", ""), a.get("published", "")), reverse=True)
+    store["articles"] = [a for a in store["articles"] if a.get("date", "") >= cutoff][:max_articles]
     keep = {os.path.basename(rel) for a in store["articles"] for rel in (a.get("audio") or {}).values()}
     for fn in os.listdir(AUDIO):
         if fn.endswith(".mp3") and fn not in keep:
