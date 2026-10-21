@@ -1,0 +1,40 @@
+{
+  "checked": "2026-10-21T04:09:38.470732+00:00",
+  "added": 12,
+  "total": 231,
+  "sources": {
+    "ITmedia": {
+      "feed_entries": 50,
+      "added": 4,
+      "body_ok": 4,
+      "body_fallback": 0,
+      "tr_fail": 28,
+      "tts_fail": 8
+    },
+    "CNET Japan": {
+      "feed_entries": 30,
+      "added": 4,
+      "body_ok": 4,
+      "body_fallback": 0,
+      "tr_fail": 35,
+      "tts_fail": 8
+    },
+    "GIGAZINE": {
+      "feed_entries": 30,
+      "added": 4,
+      "body_ok": 4,
+      "body_fallback": 0,
+      "tr_fail": 24,
+      "tts_fail": 8
+    }
+  },
+  "warnings": [
+    "[ITmedia] 번역 실패 28건",
+    "[ITmedia] TTS 실패 8건",
+    "[CNET Japan] 번역 실패 35건",
+    "[CNET Japan] TTS 실패 8건",
+    "[GIGAZINE] 번역 실패 24건",
+    "[GIGAZINE] TTS 실패 8건"
+  ],
+  "ok": false
+}
